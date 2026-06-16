@@ -16,9 +16,9 @@
 ## 页面展示 
 以下是书签导航的主页截图
 - 卡片视图
-![图片描述](./content1.png)
+![图片描述](./images/content1.png)
 - 表格视图
-![图片描述](./content2.png)
+![图片描述](./images/content2.png)
 ## 主要功能
 
 - 支持账号注册、登录和鉴权
