@@ -99,6 +99,7 @@ bookmarks/
   ├── images/                  # 页面展示
   │   ├── content1.png
   │   └── content2.png
+  ├── bookmark-extension/      # Chrome 浏览器插件
 ```
 
 
@@ -140,7 +141,15 @@ bookmarks/
    - 在搜索框输入标题或者链接，按 Enter 或点击搜索。
 6. 书签排序：
    - 在卡片视图（任意非“全部”分类时）或者表格视图下点击“添加日期”、“点击次数”、“最后点击”按钮，即可对相应分类的书签进行排序。
-  
+7. 安装 Chrome 浏览器插件：
+   - 打开 Chrome 浏览器，地址栏输入 `chrome://extensions/`
+   - 开启右上角“开发者模式”
+   - 点击“加载已解压的扩展程序”，选择 `bookmark-extension` 文件夹
+   - 扩展图标会出现在浏览器工具栏
+   - 登录书签网站 → 进入“设置” → 在“API 密钥”卡片点击“生成密钥”。
+   - 点击 Chrome 扩展图标 → 点击下方“扩展设置（API 密钥）” → 粘贴密钥 → 点击“保存”。
+   - 浏览任意网页 → 点击扩展图标 → 自动填入标题和网址 → 选择分类 → 添加书签。
+   
 ## Star History
 
 <a href="https://www.star-history.com/?repos=funtoes%2Fbookmarks&type=date&legend=top-left">
