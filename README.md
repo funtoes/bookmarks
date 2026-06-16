@@ -123,9 +123,9 @@ bookmarks/
 
 ### 3. 访问站点
 
-- 在浏览器中访问： https://yourdomain.com/install.php 
+- 在浏览器中访问： https://你的域名.com/install.php 
 - 系统会自动创建数据库表
-- 然后访问： https://yourdomain.com/ 注册登录后即可开始添加和管理书签！
+- 然后访问： https://你的域名.com/ 注册登录后即可开始添加和管理书签！
 
 ## 使用说明
 
