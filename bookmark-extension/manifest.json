@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "书签快速添加",
+  "version": "1.0",
+  "description": "一键将当前网页添加到你的书签系统",
+  "permissions": ["activeTab", "tabs"],
+  "host_permissions": [
+    "https://你的域名.com/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon.png",
+      "48": "icon.png",
+      "128": "icon.png"
+    }
+  },
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  }
+}

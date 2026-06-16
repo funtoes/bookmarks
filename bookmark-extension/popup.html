@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="popup-container">
+    <h2>添加书签</h2>
+    <div id="message" class="message" style="display:none;"></div>
+    <div class="form-group">
+      <label for="url">网址</label>
+      <input type="text" id="url" readonly>
+    </div>
+    <div class="form-group">
+      <label for="title">标题</label>
+      <input type="text" id="title">
+    </div>
+    <div class="form-group">
+      <label for="category">分类</label>
+      <select id="category">
+        <option value="">加载中...</option>
+      </select>
+    </div>
+    <button id="addBtn" class="btn">添加书签</button>
+    <div class="footer">
+      <a href="https://你的域名.com/" target="_blank">打开书签管理</a>
+    </div>
+	    <hr>
+    <div class="settings-link">
+      <button id="settingsBtn" class="btn-link">扩展设置（API 密钥）</button>
+    </div>
+    <div id="apiKeyPanel" style="display:none;">
+      <div class="form-group">
+        <label for="apiKey">API 密钥</label>
+        <input type="text" id="apiKey" placeholder="粘贴你在网站获取的密钥">
+      </div>
+      <button id="saveApiKeyBtn" class="btn btn-sm">保存</button>
+    </div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
