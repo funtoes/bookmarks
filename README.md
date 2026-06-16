@@ -96,6 +96,9 @@ bookmarks/
   ├── tracking.php             # 点击统计与重定向
   ├── update_sort.php          # 拖拽排序AJAX端点
   ├── favicon.ico              # 默认图标和 favicon
+  ├── images/                  # 页面展示
+  │   ├── content1.png
+  │   └── content2.png
 ```
 
 
