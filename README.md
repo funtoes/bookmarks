@@ -131,3 +131,13 @@ bookmarks/
    - 在搜索框输入标题或者链接，按 Enter 或点击搜索。
 6. 书签排序：
    - 在卡片视图（任意非“全部”分类时）或者表格视图下点击“添加日期”、“点击次数”、“最后点击”按钮，即可对相应分类的书签进行排序。
+  
+## Star History
+
+<a href="https://www.star-history.com/?repos=funtoes%2Fbookmarks&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=funtoes/bookmarks&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=funtoes/bookmarks&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=funtoes/bookmarks&type=date&legend=top-left" />
+ </picture>
+</a>
