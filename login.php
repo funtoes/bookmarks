@@ -79,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label class="checkbox-label">
                     <input type="checkbox" id="remember" name="remember" value="1">
                     <span class="checkmark"></span>
-                    记住我（一年免登录）
+                    记住我
                 </label>
             </div>
             <button type="submit" class="btn btn-primary btn-block">登录</button>
