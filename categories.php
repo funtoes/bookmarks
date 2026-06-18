@@ -106,12 +106,32 @@ $categories = $cats->fetchAll();
 <header class="main-header">
     <div class="header-inner">
         <div class="header-left">
-            <a href="index.php" class="back-link" title="返回首页">← 返回首页</a>
-            <h1 class="page-title">📁 分类管理</h1>
+            <a href="index.php" class="logo">📑 书签管理</a>
+            <form class="search-form" method="get" action="" id="searchForm">
+                <input type="hidden" name="category" value="all">
+                <input type="hidden" name="view" value="card">
+                <select class="search-engine" id="searchEngine">
+                    <option value="site" selected>本站</option>
+                    <option value="memo">备忘录</option>
+                    <option value="baidu">百度</option>
+                    <option value="google">谷歌</option>
+                    <option value="bing">必应</option>
+                    <option value="sogou">搜狗</option>
+                    <option value="so360">360</option>
+                    <option value="duckduckgo">DDGo</option>
+                    <option value="yandex">Yandex</option>
+					<option value="yaru">Ya.ru</option>
+                </select>
+                <input type="text" name="search" placeholder="搜索书签..." value="" class="search-input" id="searchInput">
+                <button type="submit" class="search-btn">搜索</button>
+            </form>
         </div>
         <div class="header-actions">
-            <a href="index.php" class="btn-icon" title="书签列表">📑</a>
-            <a href="add.php" class="btn-icon" title="添加书签">＋</a>
+            <a href="add.php" class="btn-add">+ 添加书签</a>
+            <a href="memos.php" class="btn-icon" title="备忘录">📝</a>
+            <a href="categories.php" class="btn-icon" title="分类管理">📁</a>
+            <a href="settings.php" class="btn-icon" title="设置">⚙️</a>
+            <a href="logout.php" class="btn-icon" title="退出">🚪</a>
         </div>
     </div>
 </header>
@@ -128,11 +148,11 @@ $categories = $cats->fetchAll();
             <span class="cat-name"><?= safeOutput($cat['name']) ?></span>
             <div class="cat-actions">
                 <button class="btn btn-sm btn-edit" data-id="<?= $cat['id'] ?>" data-name="<?= safeOutput($cat['name']) ?>">编辑</button>
-                <form method="post" style="display:inline" onsubmit="return confirm('确定删除此分类？内部书签将移入“未分类”。')">
-                    <input type="hidden" name="action" value="delete">
-                    <input type="hidden" name="id" value="<?= $cat['id'] ?>">
-                    <button type="submit" class="btn btn-sm btn-danger">删除</button>
-                </form>
+                <form method="post" style="display:inline" class="delete-form">
+					<input type="hidden" name="action" value="delete">
+					<input type="hidden" name="id" value="<?= $cat['id'] ?>">
+					<button type="submit" class="btn btn-sm btn-danger" data-confirm="确定删除此分类？内部书签将移入“未分类”。">删除</button>
+				</form>
             </div>
         </div>
         <?php endforeach; ?>
@@ -152,16 +172,20 @@ $categories = $cats->fetchAll();
 <div id="editModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
-        <h3>编辑分类名称</h3>
+        <h3>✏️ 编辑分类名称</h3>
         <form method="post" id="editForm">
             <input type="hidden" name="action" value="edit">
             <input type="hidden" name="id" id="edit-id">
-            <input type="text" name="name" id="edit-name" required>
-            <button type="submit" class="btn">保存</button>
+            <input type="text" name="name" id="edit-name" placeholder="请输入分类名称" required>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-cancel" onclick="document.getElementById('editModal').style.display='none'">取消</button>
+                <button type="submit" class="btn btn-primary">保存</button>
+            </div>
         </form>
     </div>
 </div>
 
 <script src="script.js"></script>
+<?php require_once __DIR__ . '/footer.php'; ?>
 </body>
 </html>

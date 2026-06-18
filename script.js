@@ -172,4 +172,121 @@ document.addEventListener('DOMContentLoaded', function() {
             modal.style.display = 'none';
         }
     };
+	
+	// 自定义确认弹窗（替换原生 confirm）
+function showConfirm(message, callback) {
+    // 移除已有弹窗
+    const old = document.querySelector('.confirm-overlay');
+    if (old) old.remove();
+
+    const overlay = document.createElement('div');
+    overlay.className = 'confirm-overlay';
+    overlay.innerHTML = `
+        <div class="confirm-dialog">
+            <div class="confirm-icon">⚠️</div>
+            <div class="confirm-title">确认操作</div>
+            <div class="confirm-message">${message}</div>
+            <div class="confirm-actions">
+                <button class="confirm-btn cancel">取消</button>
+                <button class="confirm-btn danger">确定删除</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+
+    overlay.querySelector('.confirm-btn.cancel').addEventListener('click', () => {
+        overlay.remove();
+    });
+    overlay.querySelector('.confirm-btn.danger').addEventListener('click', () => {
+        overlay.remove();
+        if (typeof callback === 'function') callback();
+    });
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) overlay.remove();
+    });
+}
+
+// 绑定所有带有 data-confirm 属性的删除按钮
+document.addEventListener('click', function(e) {
+    const target = e.target.closest('[data-confirm]');
+    if (!target) return;
+    e.preventDefault();
+
+    const message = target.dataset.confirm || '确定删除吗？';
+    showConfirm(message, () => {
+        // 如果是链接，直接跳转
+        if (target.tagName === 'A') {
+            window.location.href = target.href;
+        }
+        // 如果是表单内的按钮，提交所在表单
+        if (target.tagName === 'BUTTON' && target.form) {
+            target.form.submit();
+        }
+    });
+});
+
+// 搜索框多引擎支持
+document.getElementById('searchForm').addEventListener('submit', function(e) {
+    const engine = document.getElementById('searchEngine').value;
+    const query = document.getElementById('searchInput').value.trim();
+    if (!query) return;
+
+    let searchUrl = '';
+    switch (engine) {
+        case 'site':
+            return; // 本站书签，正常提交
+        case 'memo':
+            window.location.href = 'memos.php?search=' + encodeURIComponent(query);
+            e.preventDefault();
+            break;
+        case 'baidu':
+            searchUrl = 'https://www.baidu.com/s?wd=' + encodeURIComponent(query);
+            break;
+        case 'google':
+            searchUrl = 'https://www.google.com/search?q=' + encodeURIComponent(query);
+            break;
+        case 'bing':
+            searchUrl = 'https://www.bing.com/search?q=' + encodeURIComponent(query);
+            break;
+        case 'sogou':
+            searchUrl = 'https://www.sogou.com/web?query=' + encodeURIComponent(query);
+            break;
+        case 'so360':
+            searchUrl = 'https://www.so.com/s?q=' + encodeURIComponent(query);
+            break;
+        case 'duckduckgo':
+            searchUrl = 'https://duckduckgo.com/?q=' + encodeURIComponent(query);
+            break;
+        case 'yandex':
+            searchUrl = 'https://yandex.com/search/?text=' + encodeURIComponent(query);
+            break;
+		case 'yaru':
+            searchUrl = 'https://ya.ru/search/?text=' + encodeURIComponent(query);
+            break;
+    }
+    if (searchUrl) {
+        e.preventDefault();
+        window.open(searchUrl, '_blank');
+    }
+});
+
+/**
+ * 显示备忘录复制底部提示弹窗
+ * @param {string} message - 提示文字
+ * @param {string} type - 'success' | 'error' | '' (默认灰底)
+ */
+function showToast(message, type = '') {
+    const old = document.querySelector('.toast');
+    if (old) old.remove();
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    const icons = { success: '✅', error: '❌' };
+    toast.innerHTML = `<span class="toast-icon">${icons[type] || 'ℹ️'}</span>${message}`;
+    document.body.appendChild(toast);
+    requestAnimationFrame(() => toast.classList.add('show'));
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 250);
+    }, 2500);
+}
 });

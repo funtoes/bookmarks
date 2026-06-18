@@ -145,14 +145,26 @@ function sortIndicator(string $field): string {
         <!-- 左侧：Logo + 搜索 -->
         <div class="header-left">
             <a href="index.php" class="logo">📑 书签管理</a>
-            <form class="search-form" method="get" action="">
-                <input type="hidden" name="category" value="<?= safeOutput($selectedCategory) ?>">
-                <input type="hidden" name="view" value="<?= $view ?>">
-                <input type="hidden" name="sort" value="<?= safeOutput($sort) ?>">
-                <input type="hidden" name="order" value="<?= $order ?>">
-                <input type="text" name="search" placeholder="搜索书签..." value="<?= safeOutput($search) ?>" class="search-input">
-                <button type="submit" class="search-btn">搜索</button>
-            </form>
+            <form class="search-form" method="get" action="" id="searchForm">
+				<input type="hidden" name="category" value="<?= safeOutput($selectedCategory) ?>">
+				<input type="hidden" name="view" value="<?= $view ?>">
+				<input type="hidden" name="sort" value="<?= safeOutput($sort) ?>">
+				<input type="hidden" name="order" value="<?= $order ?>">
+				<select class="search-engine" id="searchEngine">
+					<option value="site">本站</option>
+					<option value="memo">备忘录</option>
+					<option value="baidu">百度</option>
+					<option value="google">谷歌</option>
+					<option value="bing">必应</option>
+					<option value="sogou">搜狗</option>
+					<option value="so360">360</option>
+					<option value="duckduckgo">DDGo</option>
+					<option value="yandex">Yandex</option>
+					<option value="yaru">Ya.ru</option>
+				</select>
+				<input type="text" name="search" placeholder="搜索书签..." value="<?= safeOutput($search) ?>" class="search-input" id="searchInput">
+				<button type="submit" class="search-btn" id="searchBtn">搜索</button>
+			</form>
         </div>
 
         <!-- 右侧：视图切换 + 添加书签 + 用户菜单 -->
@@ -162,6 +174,7 @@ function sortIndicator(string $field): string {
 				<a href="?<?= buildQuery(['view' => 'table', 'page' => 1]) ?>" class="view-btn <?= $view==='table'?'active':'' ?>" title="表格视图">☰</a>
 			</div>
 			<a href="add.php" class="btn-add">+ 添加书签</a>
+			<a href="memos.php" class="btn-icon" title="备忘录">📝</a>
 			<a href="categories.php" class="btn-icon" title="分类管理">📁</a>
 			<a href="settings.php" class="btn-icon" title="设置">⚙️</a>
 			<a href="logout.php" class="btn-icon" title="退出登录">🚪</a>
@@ -269,7 +282,9 @@ function sortIndicator(string $field): string {
                         <td><?= safeOutput($bm['category_name']) ?></td>
                         <td class="actions">
                             <a href="edit.php?id=<?= $bm['id'] ?>" class="btn btn-sm btn-warning">编辑</a>
-                            <a href="delete.php?id=<?= $bm['id'] ?>&return=<?= urlencode(buildQuery(['page' => 1])) ?>" class="btn btn-sm btn-danger" onclick="return confirm('确定删除该书签吗？')">删除</a>
+                            <a href="delete.php?id=<?= $bm['id'] ?>&return=<?= urlencode(buildQuery(['page' => 1])) ?>" 
+   class="btn btn-sm btn-danger" 
+   data-confirm="确定删除该书签吗？">删除</a>
                         </td>
                     </tr>
                     <?php endforeach; ?>
@@ -293,5 +308,6 @@ function sortIndicator(string $field): string {
 <?php endif; ?>
 
 <script src="script.js"></script>
+<?php require_once __DIR__ . '/footer.php'; ?>
 </body>
 </html>

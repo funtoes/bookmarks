@@ -65,26 +65,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="auth-container" style="max-width: 500px;">
-    <h1>编辑书签</h1>
+<header class="main-header">
+    <div class="header-inner">
+        <div class="header-left">
+            <a href="index.php" class="back-link">← 返回首页</a>
+            <h1 class="page-title">✏️ 编辑书签</h1>
+        </div>
+    </div>
+</header>
+
+<div class="memo-editor-container">
     <?php if ($error): ?>
         <div class="alert alert-error"><?= safeOutput($error) ?></div>
     <?php endif; ?>
-    <form method="post" action="edit.php?id=<?= $id ?>">
+
+    <form method="post" class="memo-editor-form">
+        <!-- 网址 -->
         <div class="form-group">
-            <label for="url">网址</label>
-            <div style="display: flex; gap: 5px;">
-                <input type="url" id="url" name="url" required value="<?= safeOutput($_POST['url'] ?? $bookmark['url']) ?>" style="flex:1;">
-                <button type="button" id="fetchTitleBtn" class="btn btn-sm">重新获取标题</button>
+            <label for="url">🔗 网址</label>
+            <div class="url-input-group">
+                <input type="url" id="url" name="url" required value="<?= safeOutput($_POST['url'] ?? $bookmark['url']) ?>" placeholder="https://example.com">
+                <button type="button" id="fetchTitleBtn" class="btn-fetch-title">获取标题</button>
             </div>
         </div>
+
+        <!-- 标题 -->
         <div class="form-group">
-            <label for="title">标题</label>
-            <input type="text" id="title" name="title" required value="<?= safeOutput($_POST['title'] ?? $bookmark['title']) ?>">
+            <label for="title">📝 标题</label>
+            <input type="text" id="title" name="title" required value="<?= safeOutput($_POST['title'] ?? $bookmark['title']) ?>" placeholder="书签标题">
         </div>
+
+        <!-- 分类 -->
         <div class="form-group">
-            <label for="category_id">分类</label>
-            <select class="nice-select" id="category_id" name="category_id" required>
+            <label for="category_id">📁 分类</label>
+            <select id="category_id" name="category_id" required>
+                <option value="">-- 选择分类 --</option>
                 <?php foreach ($categories as $cat): ?>
                     <option value="<?= $cat['id'] ?>" <?= ($bookmark['category_id'] == $cat['id']) ? 'selected' : '' ?>>
                         <?= safeOutput($cat['name']) ?>
@@ -92,10 +107,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <?php endforeach; ?>
             </select>
         </div>
-        <button type="submit" class="btn">保存修改</button>
-        <p style="text-align:center; margin-top:15px;"><a href="index.php">返回首页</a></p>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">💾 保存修改</button>
+            <a href="index.php" class="btn btn-cancel">取消</a>
+        </div>
     </form>
 </div>
+
 <script src="script.js"></script>
 </body>
 </html>

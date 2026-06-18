@@ -43,6 +43,19 @@ try {
 		`key` VARCHAR(50) PRIMARY KEY,
 		`value` TEXT NOT NULL
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+	
+	// 创建备忘录表
+	$pdo->exec("CREATE TABLE IF NOT EXISTS `memos` (
+		`id` INT AUTO_INCREMENT PRIMARY KEY,
+		`user_id` INT NOT NULL,
+		`category_id` INT NOT NULL,
+		`content` TEXT NOT NULL,
+		`share_token` VARCHAR(64) NULL DEFAULT NULL,
+		`created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+		`updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+		FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
+		FOREIGN KEY (`category_id`) REFERENCES `categories`(`id`) ON DELETE CASCADE
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
 
     echo "数据库表创建成功！请删除 install.php 文件。";
 } catch (PDOException $e) {

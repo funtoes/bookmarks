@@ -1,10 +1,10 @@
 <?php
 // 数据库连接参数，请按你的虚拟主机信息修改
-define('DB_HOST', '数据库地址');
-define('DB_NAME', '数据库名称');
-define('DB_USER', '数据库用户名');
-define('DB_PASS', '数据库密码');
+define('DB_HOST', 'qdm81671854.my3w.com');
+define('DB_NAME', 'qdm81671854_db');
+define('DB_USER', 'qdm81671854');
+define('DB_PASS', 'Ximizhoxlzmzh-0694');
 define('DB_CHARSET', 'utf8mb4');
 
 // 网站基础URL（用于重定向等，末尾不带斜杠）
-define('BASE_URL', 'https://你的域名.com');
+define('BASE_URL', 'https://blog.youyisi8.com');

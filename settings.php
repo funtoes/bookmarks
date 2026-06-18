@@ -99,6 +99,23 @@ $stmt->execute([$userId]);
 $bookmarkCount = $stmt->fetchColumn();
 
 $registrationDate = date('Y-m-d H:i', strtotime($user['created_at']));
+
+// 处理页脚设置更新
+if (isset($_POST['action']) && $_POST['action'] === 'update_footer') {
+    $icp = trim($_POST['icp'] ?? '');
+    $contact = trim($_POST['contact'] ?? '');
+    $github = trim($_POST['github'] ?? '');
+
+    // 更新或插入
+    $settings = ['icp' => $icp, 'contact' => $contact, 'github' => $github];
+    $stmt = $pdo->prepare("INSERT INTO settings (`key`, `value`) VALUES (?, ?) ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)");
+    foreach ($settings as $key => $value) {
+        $stmt->execute([$key, $value]);
+    }
+    setFlash('success', '页脚信息已更新。');
+    header('Location: settings.php');
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -112,12 +129,32 @@ $registrationDate = date('Y-m-d H:i', strtotime($user['created_at']));
 <header class="main-header">
     <div class="header-inner">
         <div class="header-left">
-            <a href="index.php" class="back-link" title="返回首页">← 返回首页</a>
-            <h1 class="page-title">⚙️ 设置</h1>
+            <a href="index.php" class="logo">📑 书签管理</a>
+            <form class="search-form" method="get" action="" id="searchForm">
+                <input type="hidden" name="category" value="all">
+                <input type="hidden" name="view" value="card">
+                <select class="search-engine" id="searchEngine">
+                    <option value="site" selected>本站</option>
+                    <option value="memo">备忘录</option>
+                    <option value="baidu">百度</option>
+                    <option value="google">谷歌</option>
+                    <option value="bing">必应</option>
+                    <option value="sogou">搜狗</option>
+                    <option value="so360">360</option>
+                    <option value="duckduckgo">DDGo</option>
+                    <option value="yandex">Yandex</option>
+					<option value="yaru">Ya.ru</option>
+                </select>
+                <input type="text" name="search" placeholder="搜索书签..." value="" class="search-input" id="searchInput">
+                <button type="submit" class="search-btn">搜索</button>
+            </form>
         </div>
         <div class="header-actions">
-            <a href="index.php" class="btn-icon" title="书签列表">📑</a>
-            <a href="add.php" class="btn-icon" title="添加书签">＋</a>
+            <a href="add.php" class="btn-add">+ 添加书签</a>
+            <a href="memos.php" class="btn-icon" title="备忘录">📝</a>
+            <a href="categories.php" class="btn-icon" title="分类管理">📁</a>
+            <a href="settings.php" class="btn-icon" title="设置">⚙️</a>
+            <a href="logout.php" class="btn-icon" title="退出">🚪</a>
         </div>
     </div>
 </header>
@@ -238,9 +275,29 @@ $registrationDate = date('Y-m-d H:i', strtotime($user['created_at']));
             <button type="submit" class="btn btn-primary btn-sm">生成密钥</button>
         </form>
     <?php endif; ?>
+	</div>
+	<div class="setting-card">
+    <h3>页脚设置</h3>
+    <form method="post">
+        <input type="hidden" name="action" value="update_footer">
+        <div class="form-group">
+            <label>备案号</label>
+            <input type="text" name="icp" placeholder="例如：粤ICP备XXXXXX号" value="<?= safeOutput(getSetting('icp')) ?>">
+        </div>
+        <div class="form-group">
+            <label>联系方式（邮箱）</label>
+            <input type="email" name="contact" placeholder="例如：admin@example.com" value="<?= safeOutput(getSetting('contact')) ?>">
+        </div>
+        <div class="form-group">
+            <label>源码链接（GitHub）</label>
+            <input type="url" name="github" placeholder="例如：https://github.com/your/repo" value="<?= safeOutput(getSetting('github')) ?>">
+        </div>
+        <button type="submit" class="btn">保存页脚设置</button>
+    </form>
 </div>
 </div>
 
 <script src="script.js"></script>
+<?php require_once __DIR__ . '/footer.php'; ?>
 </body>
 </html>

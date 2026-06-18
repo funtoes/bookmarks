@@ -85,3 +85,18 @@ function clearRememberCookie(): void {
         ]);
     }
 }
+
+/**
+ * 获取站点设置
+ */
+function getSetting(string $key, string $default = ''): string {
+    try {
+        $pdo = getDB();
+        $stmt = $pdo->prepare("SELECT value FROM settings WHERE `key` = ?");
+        $stmt->execute([$key]);
+        $value = $stmt->fetchColumn();
+        return $value !== false ? $value : $default;
+    } catch (PDOException $e) {
+        return $default;
+    }
+}

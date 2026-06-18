@@ -5,7 +5,7 @@ requireLogin();
 $pdo = getDB();
 $userId = currentUserId();
 
-// 获取当前用户的分类列表
+// 获取分类列表
 $catStmt = $pdo->prepare("SELECT id, name FROM categories WHERE user_id = ? ORDER BY sort_order ASC");
 $catStmt->execute([$userId]);
 $categories = $catStmt->fetchAll();
@@ -23,7 +23,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } elseif ($categoryId <= 0) {
         $error = '请选择分类。';
     } else {
-        // 验证分类属于当前用户
         $stmt = $pdo->prepare("SELECT id FROM categories WHERE id = ? AND user_id = ?");
         $stmt->execute([$categoryId, $userId]);
         if (!$stmt->fetch()) {
@@ -35,7 +34,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($stmt->fetch()) {
                 $error = '该书签已存在，请勿重复添加。';
             } else {
-                // 插入书签
                 $insert = $pdo->prepare("INSERT INTO bookmarks (user_id, category_id, title, url) VALUES (?, ?, ?, ?)");
                 $insert->execute([$userId, $categoryId, $title, $url]);
                 setFlash('success', '书签添加成功！');
@@ -55,26 +53,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="auth-container" style="max-width: 500px;">
-    <h1>添加书签</h1>
+<header class="main-header">
+    <div class="header-inner">
+        <div class="header-left">
+            <a href="index.php" class="back-link">← 返回首页</a>
+            <h1 class="page-title">🔖 添加书签</h1>
+        </div>
+    </div>
+</header>
+
+<div class="memo-editor-container">
     <?php if ($error): ?>
         <div class="alert alert-error"><?= safeOutput($error) ?></div>
     <?php endif; ?>
-    <form method="post" action="add.php">
+
+    <form method="post" class="memo-editor-form">
+        <!-- 网址 -->
         <div class="form-group">
-            <label for="url">网址</label>
-            <div style="display: flex; gap: 5px;">
-                <input type="url" id="url" name="url" required placeholder="https://example.com" value="<?= safeOutput($_POST['url'] ?? '') ?>" style="flex:1;">
-                <button type="button" id="fetchTitleBtn" class="btn btn-sm">获取标题</button>
+            <label for="url">🔗 网址</label>
+            <div class="url-input-group">
+                <input type="url" id="url" name="url" required placeholder="https://example.com" value="<?= safeOutput($_POST['url'] ?? '') ?>">
+                <button type="button" id="fetchTitleBtn" class="btn-fetch-title">获取标题</button>
             </div>
         </div>
+
+        <!-- 标题 -->
         <div class="form-group">
-            <label for="title">标题</label>
-            <input type="text" id="title" name="title" required value="<?= safeOutput($_POST['title'] ?? '') ?>">
+            <label for="title">📝 标题</label>
+            <input type="text" id="title" name="title" required value="<?= safeOutput($_POST['title'] ?? '') ?>" placeholder="书签标题">
         </div>
+
+        <!-- 分类 -->
         <div class="form-group">
-            <label for="category_id">分类</label>
-            <select class="nice-select" id="category_id" name="category_id" required>
+            <label for="category_id">📁 分类</label>
+            <select id="category_id" name="category_id" required>
                 <option value="">-- 选择分类 --</option>
                 <?php foreach ($categories as $cat): ?>
                     <option value="<?= $cat['id'] ?>" <?= (isset($_POST['category_id']) && $_POST['category_id'] == $cat['id']) ? 'selected' : '' ?>>
@@ -83,10 +95,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <?php endforeach; ?>
             </select>
         </div>
-        <button type="submit" class="btn">添加书签</button>
-        <p style="text-align:center; margin-top:15px;"><a href="index.php">返回首页</a></p>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">💾 添加书签</button>
+            <a href="index.php" class="btn btn-cancel">取消</a>
+        </div>
     </form>
 </div>
+
 <script src="script.js"></script>
 </body>
 </html>
