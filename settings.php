@@ -289,8 +289,8 @@ if (isset($_POST['action']) && $_POST['action'] === 'update_footer') {
             <input type="email" name="contact" placeholder="例如：admin@example.com" value="<?= safeOutput(getSetting('contact')) ?>">
         </div>
         <div class="form-group">
-            <label>源码链接（GitHub）</label>
-            <input type="url" name="github" placeholder="例如：https://github.com/your/repo" value="<?= safeOutput(getSetting('github')) ?>">
+            <label>博客</label>
+            <input type="url" name="github" placeholder="例如：https://github.com/funtoes/bookmarks" value="<?= safeOutput(getSetting('github')) ?>">
         </div>
         <button type="submit" class="btn">保存页脚设置</button>
     </form>
