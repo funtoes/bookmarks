@@ -61,14 +61,7 @@ function generateRememberToken(): string {
  */
 function setRememberCookie(string $token, int $days = 365): void {
     $expire = time() + 86400 * $days;
-    setcookie('remember_token', $token, [
-        'expires'  => $expire,
-        'path'     => '/',
-        'httponly' => true,   // 防止 JS 读取
-        'samesite' => 'Lax',  // 防止 CSRF
-        // 如果网站使用 HTTPS，请取消下面一行的注释
-        'secure'   => true,
-    ]);
+    setcookie('remember_token', $token, $expire, '/', '', false, true);
 }
 
 /**
