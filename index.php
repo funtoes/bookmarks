@@ -153,26 +153,22 @@ function sortIndicator(string $field): string {
         <!-- 左侧：Logo + 搜索 -->
         <div class="header-left">
             <a href="index.php" class="logo">📑 书签管理</a>
-            <form class="search-form" method="get" action="" id="searchForm">
-				<input type="hidden" name="category" value="<?= safeOutput($selectedCategory) ?>">
-				<input type="hidden" name="view" value="<?= $view ?>">
-				<input type="hidden" name="sort" value="<?= safeOutput($sort) ?>">
-				<input type="hidden" name="order" value="<?= $order ?>">
-				<select class="search-engine" id="searchEngine">
-					<option value="site">本站</option>
-					<option value="memo">备忘录</option>
-					<option value="baidu">百度</option>
-					<option value="google">谷歌</option>
-					<option value="bing">必应</option>
-					<option value="sogou">搜狗</option>
-					<option value="so360">360</option>
-					<option value="duckduckgo">DDGo</option>
-					<option value="yandex">Yandex</option>
+            <form class="search-form" method="get" action="" onsubmit="return false;">
+                <select class="search-engine">
+                    <option value="site" selected>本站</option>
+                    <option value="memo">备忘录</option>
+                    <option value="baidu">百度</option>
+                    <option value="google">谷歌</option>
+                    <option value="bing">必应</option>
+                    <option value="sogou">搜狗</option>
+                    <option value="so360">360</option>
+                    <option value="duckduckgo">DDGo</option>
+                    <option value="yandex">Yandex</option>
 					<option value="yaru">Ya.ru</option>
-				</select>
-				<input type="text" name="search" placeholder="搜索书签..." value="<?= safeOutput($search) ?>" class="search-input" id="searchInput">
-				<button type="submit" class="search-btn" id="searchBtn">搜索</button>
-			</form>
+                </select>
+                <input type="text" name="search" class="search-input" placeholder="搜索书签...">
+                <button type="submit" class="search-btn">搜索</button>
+            </form>
         </div>
 
         <!-- 右侧：视图切换 + 添加书签 + 用户菜单 -->

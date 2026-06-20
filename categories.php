@@ -107,10 +107,8 @@ $categories = $cats->fetchAll();
     <div class="header-inner">
         <div class="header-left">
             <a href="index.php" class="logo">📑 书签管理</a>
-            <form class="search-form" method="get" action="" id="searchForm">
-                <input type="hidden" name="category" value="all">
-                <input type="hidden" name="view" value="card">
-                <select class="search-engine" id="searchEngine">
+            <form class="search-form" method="get" action="" onsubmit="return false;">
+                <select class="search-engine">
                     <option value="site" selected>本站</option>
                     <option value="memo">备忘录</option>
                     <option value="baidu">百度</option>
@@ -122,7 +120,7 @@ $categories = $cats->fetchAll();
                     <option value="yandex">Yandex</option>
 					<option value="yaru">Ya.ru</option>
                 </select>
-                <input type="text" name="search" placeholder="搜索书签..." value="" class="search-input" id="searchInput">
+                <input type="text" name="search" class="search-input" placeholder="搜索书签...">
                 <button type="submit" class="search-btn">搜索</button>
             </form>
         </div>

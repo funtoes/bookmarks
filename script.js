@@ -225,19 +225,29 @@ document.addEventListener('click', function(e) {
     });
 });
 
-// 搜索框多引擎支持
-document.getElementById('searchForm').addEventListener('submit', function(e) {
-    const engine = document.getElementById('searchEngine').value;
-    const query = document.getElementById('searchInput').value.trim();
+// 全站统一搜索逻辑（绑定到所有 .search-form）
+document.addEventListener('submit', function(e) {
+    const form = e.target.closest('.search-form');
+    if (!form) return;
+
+    const engine = form.querySelector('.search-engine');
+    const input = form.querySelector('.search-input');
+    if (!engine || !input) return;
+
+    const query = input.value.trim();
     if (!query) return;
 
+    const engineValue = engine.value;
     let searchUrl = '';
-    switch (engine) {
+
+    switch (engineValue) {
         case 'site':
-            return; // 本站书签，正常提交
+            // 搜索书签：跳转到首页
+            searchUrl = 'index.php?search=' + encodeURIComponent(query);
+            break;
         case 'memo':
-            window.location.href = 'memos.php?search=' + encodeURIComponent(query);
-            e.preventDefault();
+            // 搜索备忘录：跳转到备忘录页
+            searchUrl = 'memos.php?search=' + encodeURIComponent(query);
             break;
         case 'baidu':
             searchUrl = 'https://www.baidu.com/s?wd=' + encodeURIComponent(query);
@@ -264,8 +274,13 @@ document.getElementById('searchForm').addEventListener('submit', function(e) {
             searchUrl = 'https://ya.ru/search/?text=' + encodeURIComponent(query);
             break;
     }
-    if (searchUrl) {
-        e.preventDefault();
+
+    e.preventDefault();
+    if (engineValue === 'site' || engineValue === 'memo') {
+        // 内部搜索：跳转到对应页面
+        window.location.href = searchUrl;
+    } else {
+        // 外部搜索引擎：新标签页打开
         window.open(searchUrl, '_blank');
     }
 });
