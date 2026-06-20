@@ -1,6 +1,5 @@
 <?php
 // 延长会话有效期（365天）
-// ---------- 延长 Session 有效期并隔离存储 ----------
 $lifetime = 86400 * 365; // 一年（秒）
 ini_set('session.cookie_lifetime', $lifetime);
 ini_set('session.gc_maxlifetime', $lifetime);
@@ -20,7 +19,6 @@ require_once __DIR__ . '/functions.php';
 // 自动登录：如果未登录但存在 remember_token Cookie
 if (!isLoggedIn() && isset($_COOKIE['remember_token'])) {
     $pdo = getDB();
-    // 确保字段存在（可省略，若已手动添加）
     $token = $_COOKIE['remember_token'];
     $stmt = $pdo->prepare("SELECT id, username FROM users WHERE remember_token = ? LIMIT 1");
     $stmt->execute([$token]);
@@ -36,5 +34,19 @@ if (!isLoggedIn() && isset($_COOKIE['remember_token'])) {
         setRememberCookie($newToken, 365);
     } else {
         clearRememberCookie();
+    }
+}
+
+// ========== 新增：验证已登录用户的真实性 ==========
+if (isLoggedIn()) {
+    $pdo = getDB();
+    $stmt = $pdo->prepare("SELECT id FROM users WHERE id = ?");
+    $stmt->execute([currentUserId()]);
+    if (!$stmt->fetch()) {
+        // 用户已被删除（例如数据库重置），强制清除登录状态
+        session_destroy();
+        clearRememberCookie();
+        header('Location: ' . BASE_URL . '/login.php');
+        exit;
     }
 }
