@@ -1,4 +1,4 @@
-const BASE_URL = 'https://你的域名.com/'; // 修改为你的网站地址
+const BASE_URL = 'https://b.youyisi8.com/'; // 修改为你的网站地址
 
 document.addEventListener('DOMContentLoaded', async () => {
   const urlInput = document.getElementById('url');
@@ -40,26 +40,36 @@ document.addEventListener('DOMContentLoaded', async () => {
     let url = `${BASE_URL}/api_categories.php`;
     if (apiKey) url += `?api_key=${encodeURIComponent(apiKey)}`;
     try {
-      const res = await fetch(url, { credentials: 'include' });
-      if (!res.ok) {
-        if (res.status === 401) {
-          throw new Error('未授权：请先登录网站或设置 API 密钥');
+        const res = await fetch(url, { credentials: 'include' });
+        if (!res.ok) throw new Error('未授权：请先登录网站或设置 API 密钥');
+        const data = await res.json();
+        // 兼容新格式 { categories, default_category_id } 或旧数组
+        let categories = Array.isArray(data) ? data : data.categories;
+        let defaultCatId = Array.isArray(data) ? null : data.default_category_id;
+
+        categorySelect.innerHTML = '';
+        categories.forEach(cat => {
+            const opt = document.createElement('option');
+            opt.value = cat.id;
+            opt.textContent = cat.name;
+            categorySelect.appendChild(opt);
+        });
+
+        // 设置默认分类
+        if (defaultCatId) {
+            // 检查该分类是否存在
+            if (categories.some(cat => cat.id == defaultCatId)) {
+                categorySelect.value = defaultCatId;
+            }
+        } else if (categories.length > 0) {
+            // 若无历史记录，选中第一个分类
+            categorySelect.value = categories[0].id;
         }
-        throw new Error('网络错误');
-      }
-      const categories = await res.json();
-      categorySelect.innerHTML = '';
-      categories.forEach(cat => {
-        const opt = document.createElement('option');
-        opt.value = cat.id;
-        opt.textContent = cat.name;
-        categorySelect.appendChild(opt);
-      });
     } catch (err) {
-      showMessage(err.message, 'error');
-      categorySelect.innerHTML = '<option value="">无分类</option>';
+        showMessage(err.message, 'error');
+        categorySelect.innerHTML = '<option value="">无分类</option>';
     }
-  }
+}
 
   await loadCategories();
 
