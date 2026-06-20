@@ -121,8 +121,16 @@ function buildQuery(array $overrides = []): string {
 }
 function pageUrl(int $pageNum): string { return '?' . buildQuery(['page' => $pageNum]); }
 function sortUrl(string $field): string {
-    $currentOrder = ($_GET['sort'] ?? '') === $field && ($_GET['order'] ?? 'desc') === 'asc' ? 'desc' : 'asc';
-    return '?' . buildQuery(['sort' => $field, 'order' => $currentOrder]);
+    $currentSort = $_GET['sort'] ?? 'created_at';
+    $currentOrder = $_GET['order'] ?? 'desc';
+    if ($currentSort === $field) {
+        // 当前字段：切换顺序
+        $newOrder = ($currentOrder === 'asc') ? 'desc' : 'asc';
+    } else {
+        // 新字段：默认降序
+        $newOrder = 'desc';
+    }
+    return '?' . buildQuery(['sort' => $field, 'order' => $newOrder]);
 }
 function sortIndicator(string $field): string {
     $currentSort = $_GET['sort'] ?? 'created_at';
