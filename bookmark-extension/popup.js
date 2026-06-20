@@ -1,4 +1,4 @@
-const BASE_URL = 'https://b.youyisi8.com/'; // 修改为你的网站地址
+const BASE_URL = 'https://你的域名.com/'; // 修改为你的网站地址
 
 document.addEventListener('DOMContentLoaded', async () => {
   const urlInput = document.getElementById('url');
