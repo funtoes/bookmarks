@@ -10,6 +10,11 @@ $catStmt = $pdo->prepare("SELECT id, name FROM categories WHERE user_id = ? ORDE
 $catStmt->execute([$userId]);
 $categories = $catStmt->fetchAll();
 
+// 获取用户最近一次添加书签的分类ID（默认选中）
+$lastCatStmt = $pdo->prepare("SELECT category_id FROM bookmarks WHERE user_id = ? ORDER BY created_at DESC LIMIT 1");
+$lastCatStmt->execute([$userId]);
+$lastCatId = $lastCatStmt->fetchColumn(); // 可能为 false（无书签）
+
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = trim($_POST['title'] ?? '');
@@ -87,13 +92,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="form-group">
             <label for="category_id">📁 分类</label>
             <select id="category_id" name="category_id" required>
-                <option value="">-- 选择分类 --</option>
-                <?php foreach ($categories as $cat): ?>
-                    <option value="<?= $cat['id'] ?>" <?= (isset($_POST['category_id']) && $_POST['category_id'] == $cat['id']) ? 'selected' : '' ?>>
-                        <?= safeOutput($cat['name']) ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
+				<option value="">-- 选择分类 --</option>
+				<?php foreach ($categories as $cat): ?>
+					<?php
+					$selected = false;
+					if (isset($_POST['category_id']) && $_POST['category_id'] == $cat['id']) {
+						$selected = true;
+					} elseif (!isset($_POST['category_id']) && $lastCatId && $lastCatId == $cat['id']) {
+						$selected = true;
+					}
+					?>
+					<option value="<?= $cat['id'] ?>" <?= $selected ? 'selected' : '' ?>>
+						<?= safeOutput($cat['name']) ?>
+					</option>
+				<?php endforeach; ?>
+			</select>
         </div>
 
         <div class="form-actions">

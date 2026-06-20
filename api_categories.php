@@ -39,4 +39,13 @@ $stmt = $pdo->prepare("SELECT id, name FROM categories WHERE user_id = ? ORDER B
 $stmt->execute([$userId]);
 $categories = $stmt->fetchAll();
 
-echo json_encode($categories);
+// 最近一次添加书签的分类 ID
+$lastCatStmt = $pdo->prepare("SELECT category_id FROM bookmarks WHERE user_id = ? ORDER BY created_at DESC LIMIT 1");
+$lastCatStmt->execute([$userId]);
+$defaultCategoryId = $lastCatStmt->fetchColumn();
+if ($defaultCategoryId === false) $defaultCategoryId = null;
+
+echo json_encode([
+    'categories' => $categories,
+    'default_category_id' => $defaultCategoryId
+]);
