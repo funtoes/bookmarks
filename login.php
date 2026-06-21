@@ -86,7 +86,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </form>
 
         <div class="auth-footer">
-            还没有账号？<a href="register.php">立即注册</a>
+            <?php if (getSetting('registration_open', '1') === '1'): ?>
+			<p class="auth-link">还没有账号？<a href="register.php">立即注册</a></p>
+			<?php endif; ?>
         </div>
     </div>
 </div>
