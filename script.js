@@ -304,4 +304,37 @@ function showToast(message, type = '') {
         setTimeout(() => toast.remove(), 250);
     }, 2500);
 }
+
+// 搜索引擎切换时，更新搜索框 placeholder
+const engineSelects = document.querySelectorAll('.search-engine');
+engineSelects.forEach(select => {
+    // 定义各引擎对应的提示文字
+    const placeholders = {
+        'site': '搜索书签...',
+        'memo': '搜索备忘录...',
+        'baidu': '百度搜索',
+        'google': '谷歌搜索',
+        'bing': '必应搜索',
+        'sogou': '搜狗搜索',
+        'so360': '360搜索',
+        'duckduckgo': 'DuckDuckGo搜索',
+        'yandex': 'Yandex搜索',
+		'yaru': 'Yandex俄语版'
+    };
+
+    // 更新对应搜索框的 placeholder
+    const updatePlaceholder = () => {
+        const searchForm = select.closest('.search-form');
+        if (!searchForm) return;
+        const input = searchForm.querySelector('.search-input');
+        if (input) {
+            input.placeholder = placeholders[select.value] || '搜索...';
+        }
+    };
+
+    // 监听变化
+    select.addEventListener('change', updatePlaceholder);
+    // 初始设置
+    updatePlaceholder();
+});
 });
