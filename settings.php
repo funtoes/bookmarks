@@ -67,6 +67,11 @@ $stmt->execute();
 
 // 处理注册开关更新
 if (isset($_POST['action']) && $_POST['action'] === 'toggle_registration') {
+	if (!isAdmin()) {
+        setFlash('error', '无权限操作');
+        header('Location: settings.php');
+        exit;
+    }
     $newState = $_POST['registration_open'] === '0' ? '0' : '1';
     $stmt = $pdo->prepare("UPDATE settings SET value = ? WHERE `key` = 'registration_open'");
     $stmt->execute([$newState]);
@@ -102,6 +107,11 @@ $registrationDate = date('Y-m-d H:i', strtotime($user['created_at']));
 
 // 处理页脚设置更新
 if (isset($_POST['action']) && $_POST['action'] === 'update_footer') {
+	if (!isAdmin()) {
+        setFlash('error', '无权限操作');
+        header('Location: settings.php');
+        exit;
+    }
     $icp = trim($_POST['icp'] ?? '');
     $contact = trim($_POST['contact'] ?? '');
     $github = trim($_POST['github'] ?? '');
@@ -186,6 +196,14 @@ if (isset($_POST['action']) && $_POST['action'] === 'update_footer') {
                 <span class="info-label">书签数目</span>
                 <span class="info-value"><?= $bookmarkCount ?></span>
             </div>
+			<?php if (isAdmin()): ?>
+			<div class="info-item">
+				<span class="info-label">角色</span>
+				<span class="info-value">
+					<span class="admin-badge">管理员</span>
+				</span>
+			</div>
+			<?php endif; ?>
         </div>
     </div>
 	
@@ -236,24 +254,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'update_footer') {
             </form>
         </div>
         <p class="hint">支持从浏览器导出的书签HTML文件。</p>
-    </div>
-	
-	<!-- 注册控制 -->
-	<div class="setting-card">
-		<h3>注册控制</h3>
-		<p>当前状态：<strong><?= $regOpen ? '开启' : '关闭' ?></strong></p>
-		<?php if (isAdmin()): ?>
-			<form method="post">
-				<input type="hidden" name="action" value="toggle_registration">
-				<button type="submit" name="registration_open" value="<?= $regOpen ? '0' : '1' ?>" class="btn <?= $regOpen ? 'btn-danger' : 'btn-primary' ?>">
-					<?= $regOpen ? '关闭注册' : '开启注册' ?>
-				</button>
-			</form>
-			<p class="hint">关闭后，新用户将无法注册。</p>
-		<?php else: ?>
-			<div class="alert alert-info">⚠️ 只有管理员才能修改注册状态。</div>
-		<?php endif; ?>
-	</div>
+    </div>		
 	
 	<!-- API 密钥 -->
 	<div class="setting-card">
@@ -278,6 +279,24 @@ if (isset($_POST['action']) && $_POST['action'] === 'update_footer') {
         </form>
     <?php endif; ?>
 	</div>
+	
+	<!-- 注册控制 -->
+	<?php if (isAdmin()): ?>
+	<div class="setting-card">
+		<h3>注册控制</h3>
+		<p>当前状态：<strong><?= $regOpen ? '开启' : '关闭' ?></strong></p>
+		<form method="post">
+			<input type="hidden" name="action" value="toggle_registration">
+			<button type="submit" name="registration_open" value="<?= $regOpen ? '0' : '1' ?>" class="btn <?= $regOpen ? 'btn-danger' : 'btn-primary' ?>">
+				<?= $regOpen ? '关闭注册' : '开启注册' ?>
+			</button>
+		</form>
+		<p class="hint">关闭后，新用户将无法注册。</p>
+	</div>
+	<?php endif; ?>
+	
+	<!-- 页脚设置 -->
+	<?php if (isAdmin()): ?>
 	<div class="setting-card">
     <h3>页脚设置</h3>
     <form method="post">
@@ -296,7 +315,8 @@ if (isset($_POST['action']) && $_POST['action'] === 'update_footer') {
         </div>
         <button type="submit" class="btn">保存页脚设置</button>
     </form>
-</div>
+	</div>
+	<?php endif; ?>
 </div>
 
 <script src="script.js"></script>
