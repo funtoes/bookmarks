@@ -242,13 +242,17 @@ if (isset($_POST['action']) && $_POST['action'] === 'update_footer') {
 	<div class="setting-card">
 		<h3>注册控制</h3>
 		<p>当前状态：<strong><?= $regOpen ? '开启' : '关闭' ?></strong></p>
-		<form method="post">
-			<input type="hidden" name="action" value="toggle_registration">
-			<button type="submit" name="registration_open" value="<?= $regOpen ? '0' : '1' ?>" class="btn <?= $regOpen ? 'btn-danger' : 'btn-primary' ?>">
-            <?= $regOpen ? '关闭注册' : '开启注册' ?>
-        </button>
-		</form>
-		<p class="hint">关闭后，新用户将无法注册。</p>
+		<?php if (isAdmin()): ?>
+			<form method="post">
+				<input type="hidden" name="action" value="toggle_registration">
+				<button type="submit" name="registration_open" value="<?= $regOpen ? '0' : '1' ?>" class="btn <?= $regOpen ? 'btn-danger' : 'btn-primary' ?>">
+					<?= $regOpen ? '关闭注册' : '开启注册' ?>
+				</button>
+			</form>
+			<p class="hint">关闭后，新用户将无法注册。</p>
+		<?php else: ?>
+			<div class="alert alert-info">⚠️ 只有管理员才能修改注册状态。</div>
+		<?php endif; ?>
 	</div>
 	
 	<!-- API 密钥 -->

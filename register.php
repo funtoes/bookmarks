@@ -59,8 +59,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = '该用户名已被注册。';
         } else {
             $hash = password_hash($password, PASSWORD_DEFAULT);
-            $stmt = $pdo->prepare("INSERT INTO users (username, password) VALUES (?, ?)");
-            $stmt->execute([$username, $hash]);
+						
+            // 第一个用户自动成为管理员
+            $countStmt = $pdo->query("SELECT COUNT(*) FROM users");
+            $userCount = $countStmt->fetchColumn();
+
+            if ($userCount == 0) {
+                $stmt = $pdo->prepare("INSERT INTO users (username, password, is_admin) VALUES (?, ?, 1)");
+                $stmt->execute([$username, $hash]);
+            } else {
+                $stmt = $pdo->prepare("INSERT INTO users (username, password) VALUES (?, ?)");
+                $stmt->execute([$username, $hash]);
+            }
+						
             // 创建默认分类
             $newUserId = $pdo->lastInsertId();
             $pdo->prepare("INSERT INTO categories (user_id, name, sort_order) VALUES (?, '未分类', 0)")->execute([$newUserId]);

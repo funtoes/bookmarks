@@ -93,3 +93,18 @@ function getSetting(string $key, string $default = ''): string {
         return $default;
     }
 }
+
+/**
+ * 检查当前用户是否为管理员
+ */
+function isAdmin(): bool {
+    if (!isLoggedIn()) return false;
+    try {
+        $pdo = getDB();
+        $stmt = $pdo->prepare("SELECT is_admin FROM users WHERE id = ?");
+        $stmt->execute([currentUserId()]);
+        return (bool) $stmt->fetchColumn();
+    } catch (PDOException $e) {
+        return false;
+    }
+}

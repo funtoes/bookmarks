@@ -12,7 +12,8 @@ try {
         `default_view` ENUM('card','table') DEFAULT 'card',
         `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 		`api_key` VARCHAR(64) NULL DEFAULT NULL,
-		`remember_token` VARCHAR(64) NULL DEFAULT NULL
+		`remember_token` VARCHAR(64) NULL DEFAULT NULL,
+		`is_admin` TINYINT(1) NOT NULL DEFAULT 0
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
 
     // 创建分类表
