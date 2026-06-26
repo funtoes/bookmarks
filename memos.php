@@ -83,7 +83,7 @@ function memoPageUrl(int $p): string {
                     <option value="yandex">Yandex</option>
 					<option value="yaru">Ya.ru</option>
                 </select>
-                <input type="text" name="search" class="search-input" placeholder="搜索书签...">
+                <input type="text" name="search" value="<?= safeOutput($search) ?>" class="search-input">
                 <button type="submit" class="search-btn">搜索</button>
             </form>
         </div>

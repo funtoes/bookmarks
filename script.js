@@ -226,6 +226,8 @@ document.addEventListener('click', function(e) {
 });
 
 // 全站统一搜索逻辑（绑定到所有 .search-form）
+// 全站搜索逻辑
+// 全站搜索逻辑（稳定版）
 document.addEventListener('submit', function(e) {
     const form = e.target.closest('.search-form');
     if (!form) return;
@@ -235,53 +237,48 @@ document.addEventListener('submit', function(e) {
     if (!engine || !input) return;
 
     const query = input.value.trim();
-    if (!query) return;
-
-    const engineValue = engine.value;
-    let searchUrl = '';
-
-    switch (engineValue) {
-        case 'site':
-            // 搜索书签：跳转到首页
-            searchUrl = 'index.php?search=' + encodeURIComponent(query);
-            break;
-        case 'memo':
-            // 搜索备忘录：跳转到备忘录页
-            searchUrl = 'memos.php?search=' + encodeURIComponent(query);
-            break;
-        case 'baidu':
-            searchUrl = 'https://www.baidu.com/s?wd=' + encodeURIComponent(query);
-            break;
-        case 'google':
-            searchUrl = 'https://www.google.com/search?q=' + encodeURIComponent(query);
-            break;
-        case 'bing':
-            searchUrl = 'https://www.bing.com/search?q=' + encodeURIComponent(query);
-            break;
-        case 'sogou':
-            searchUrl = 'https://www.sogou.com/web?query=' + encodeURIComponent(query);
-            break;
-        case 'so360':
-            searchUrl = 'https://www.so.com/s?q=' + encodeURIComponent(query);
-            break;
-        case 'duckduckgo':
-            searchUrl = 'https://duckduckgo.com/?q=' + encodeURIComponent(query);
-            break;
-        case 'yandex':
-            searchUrl = 'https://yandex.com/search/?text=' + encodeURIComponent(query);
-            break;
-		case 'yaru':
-            searchUrl = 'https://ya.ru/search/?text=' + encodeURIComponent(query);
-            break;
+    if (!query) {
+        e.preventDefault();   // 空搜索不提交
+        return;
     }
 
+    const engineValue = engine.value;
+
+    // 外部搜索引擎：新标签打开
+    if (engineValue !== 'site' && engineValue !== 'memo') {
+        e.preventDefault();
+        let searchUrl = '';
+        switch (engineValue) {
+            case 'baidu': searchUrl = 'https://www.baidu.com/s?wd=' + encodeURIComponent(query); break;
+            case 'google': searchUrl = 'https://www.google.com/search?q=' + encodeURIComponent(query); break;
+            case 'bing': searchUrl = 'https://www.bing.com/search?q=' + encodeURIComponent(query); break;
+            case 'sogou': searchUrl = 'https://www.sogou.com/web?query=' + encodeURIComponent(query); break;
+            case 'so360': searchUrl = 'https://www.so.com/s?q=' + encodeURIComponent(query); break;
+            case 'duckduckgo': searchUrl = 'https://duckduckgo.com/?q=' + encodeURIComponent(query); break;
+            case 'yandex': searchUrl = 'https://yandex.com/search/?text=' + encodeURIComponent(query); break;
+			case 'yaru': searchUrl = 'https://ya.ru/search/?text=' + encodeURIComponent(query); break;
+        }
+        if (searchUrl) window.open(searchUrl, '_blank');
+        return;
+    }
+
+    // 站内搜索：阻止表单提交，统一用 JS 跳转，避免文字丢失
     e.preventDefault();
-    if (engineValue === 'site' || engineValue === 'memo') {
-        // 内部搜索：跳转到对应页面
-        window.location.href = searchUrl;
-    } else {
-        // 外部搜索引擎：新标签页打开
-        window.open(searchUrl, '_blank');
+
+    // 收集表单中除 action 外的所有参数（保留分类等）
+    const formData = new FormData(form);
+    const params = new URLSearchParams();
+    for (const [key, value] of formData.entries()) {
+        if (key !== 'action') params.append(key, value);
+    }
+
+    // 强制设置搜索关键词
+    params.set('search', query);
+
+    if (engineValue === 'site') {
+        window.location.href = 'index.php?' + params.toString();
+    } else if (engineValue === 'memo') {
+        window.location.href = 'memos.php?' + params.toString();
     }
 });
 
